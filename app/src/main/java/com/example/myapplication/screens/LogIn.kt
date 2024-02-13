@@ -14,12 +14,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -34,7 +36,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -232,8 +236,11 @@ fun CustomPassword(
     }
 }
 
+
+//@Preview(showBackground= true)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Authorization()
+fun Authorization(navHost: NavHostController)
 {
     Column {
         Text("\uD83D\uDC4B   Добро пожаловать!",
@@ -272,14 +279,13 @@ fun Authorization()
                 focusedTextColor = Color(0XFF578FFF),
                 disabledIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = Color(0XFF578FFF)
-            ),
+                cursorColor = Color(0XFF578FFF)),
             onValueChange = {
                 if (it.length <= maxLength) textState = it
             },
             shape = RoundedCornerShape(8.dp),
             singleLine = true,
-            /*trailingIcon = {
+            trailingIcon = {
                 if (textState.isNotEmpty()) {
                     IconButton(onClick = { textState = "" }) {
                         Icon(
@@ -288,8 +294,8 @@ fun Authorization()
                         )
                     }
                 }
+            })
 
-            }*/
             /*Что-то сделать с условием if (textState.isEmpty()){
                 Text("example@mail.ru")
             }*/
