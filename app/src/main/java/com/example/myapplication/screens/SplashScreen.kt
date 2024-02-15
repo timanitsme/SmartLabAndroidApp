@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,17 +38,16 @@ import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
  * Далее с помощью navController,navigate() запускает страницу LogIn
  *
  * */
-@Preview(showBackground = true)
 @SuppressLint("RememberReturnType")
 @Composable
-fun SplashScreen() { //navController: NavHostController
+fun SplashScreen(navController: NavHostController) { //navController: NavHostController
     val configuration = LocalConfiguration.current
     if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
         // portrait mode
         LaunchedEffect(key1 = true) {
             // Customize the delay time
             delay(1500L)
-           /* navController.navigate("logInScreen") {
+            /*navController.navigate("logInScreen") {
                 popUpTo("splashScreen")//удаляет страницу и стека, чтобы не было возможности вернуться к этому экрану
                 {
                     inclusive = true
@@ -61,17 +61,17 @@ fun SplashScreen() { //navController: NavHostController
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .background(color = Color(0xFF83A0F8))
+
+                .background(
+                    Brush.verticalGradient(colors = listOf(Color(0xFFA1CAFF), Color(0xFF4D9CFF), Color(0xFFA1CAFF)))
+                )
+                .background(
+                    Brush.verticalGradient(colors = listOf(Color(0xFF74C8E4), Color(0xFF73D5BC), Color(0xFF74C8E4)))
+                )
                 .background(
                     Brush.verticalGradient(
-                    /*0f to Color(0x0D6269F0),
-                    287.5f to Color(0xA63740F5),
-                    575.0f to Color(0xFF2254F5),
-                    862.5f to Color(0xA63740F5),
-                    1150.0f to Color(0x0D6269F0),
-                    startY = 0.0f,
-                    endY = 1150.0f*/
-                    colors = listOf(Color(0x0D6269F0), Color(0xA63740F5), Color(0xFF2254F5),
-                        Color(0xA63740F5), Color(0x0D6269F0)))),
+                        colors = listOf(Color(0x0D6269F0), Color(0xA63740F5), Color(0xFF2254F5),
+                            Color(0xA63740F5), Color(0x0D6269F0)))),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ){
@@ -83,7 +83,7 @@ fun SplashScreen() { //navController: NavHostController
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "splash screen logo",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.size(250.dp)
             )
         }
     }
@@ -92,4 +92,5 @@ fun SplashScreen() { //navController: NavHostController
 @Composable
 fun SplashScreenPreview()
 {
+
 }

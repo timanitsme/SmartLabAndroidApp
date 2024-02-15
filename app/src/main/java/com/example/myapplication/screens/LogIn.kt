@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.myapplication.RoundCheckBox
 
+
 @Composable
 fun LogIn(navHost: NavHostController) {
     var email: String by rememberSaveable { mutableStateOf("") }
@@ -237,12 +238,15 @@ fun CustomPassword(
 }
 
 
-//@Preview(showBackground= true)
+@Preview(showBackground= true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Authorization(navHost: NavHostController)
+fun Authorization(navHost: NavHostController) // navHost: NavHostController
 {
-    Column {
+    Column (
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()){
         Text("\uD83D\uDC4B   Добро пожаловать!",
             fontSize = 25.sp,
             modifier = Modifier.padding(start = 20.dp, top =  50.dp,
@@ -266,7 +270,7 @@ fun Authorization(navHost: NavHostController)
                 .fillMaxWidth()
                 .padding(bottom = 4.dp, top = 50.dp, start = 20.dp),
             textAlign = TextAlign.Left,
-            color = Color.Gray
+            color = Color(0xFF7E7E9A)
         )
         TextField(modifier = Modifier
             .fillMaxWidth()
@@ -285,6 +289,7 @@ fun Authorization(navHost: NavHostController)
             },
             shape = RoundedCornerShape(8.dp),
             singleLine = true,
+            placeholder = {Text("example@mail.ru", color = Color(0xFF939396))},
             trailingIcon = {
                 if (textState.isNotEmpty()) {
                     IconButton(onClick = { textState = "" }) {
@@ -296,8 +301,10 @@ fun Authorization(navHost: NavHostController)
                 }
             })
 
-            /*Что-то сделать с условием if (textState.isEmpty()){
-                Text("example@mail.ru")
-            }*/
+        /*Button(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            ) { }*/
+
     }
 }
