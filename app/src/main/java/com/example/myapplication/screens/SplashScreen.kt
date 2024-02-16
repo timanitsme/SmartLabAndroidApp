@@ -47,12 +47,12 @@ fun SplashScreen(navController: NavHostController) { //navController: NavHostCon
         LaunchedEffect(key1 = true) {
             // Customize the delay time
             delay(1500L)
-            /*navController.navigate("logInScreen") {
+            navController.navigate("logInScreen") {
                 popUpTo("splashScreen")//удаляет страницу и стека, чтобы не было возможности вернуться к этому экрану
                 {
                     inclusive = true
                 }
-            }*/
+            }
         }
         //Верстка, про каждый компонент и свойство о нем, вы можете почитать в moodle
         val ScreenHeight = LocalConfiguration.current.screenHeightDp.dp

@@ -1,6 +1,8 @@
 package com.example.myapplication.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +25,7 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -34,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -75,7 +80,7 @@ fun LogIn(navHost: NavHostController) {
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 15.dp,bottom = 15.dp, end = 10.dp), textAlign = TextAlign.End,
+                .padding(top = 15.dp, bottom = 15.dp, end = 10.dp), textAlign = TextAlign.End,
             text = "Forget Password?", fontSize = 14.sp, color = Color(0xFF1D68FF)
         )
         Row(
@@ -241,15 +246,15 @@ fun CustomPassword(
 @Preview(showBackground= true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Authorization(navHost: NavHostController) // navHost: NavHostController
+fun Authorization() // navHost: NavHostController
 {
     Column (
-            Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()){
+        Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()){
         Text("\uD83D\uDC4B   Добро пожаловать!",
             fontSize = 25.sp,
-            modifier = Modifier.padding(start = 20.dp, top =  50.dp,
+            modifier = Modifier.padding(start = 20.dp, top =  100.dp,
                 bottom = 25.dp, end = 20.dp),
             textAlign = TextAlign.Center, fontWeight = FontWeight.Bold
         )
@@ -263,6 +268,7 @@ fun Authorization(navHost: NavHostController) // navHost: NavHostController
         val maxLength = 30
         val lightBlue = Color(0xffd8e6ff)
         val blue = Color(0xff76a9ff)
+        var ColorOfButton by remember { mutableStateOf(0xFFC9D4FB) }
         Text(
             text = "Введите E-mail",
             fontSize = 18.sp,
@@ -272,13 +278,16 @@ fun Authorization(navHost: NavHostController) // navHost: NavHostController
             textAlign = TextAlign.Left,
             color = Color(0xFF7E7E9A)
         )
+
         TextField(modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = 20.dp)
+            .clip(shape = RoundedCornerShape(8.dp))
+            .shadow(elevation = 41.dp, spotColor = Color.Black, shape = RoundedCornerShape(8.dp)), //переделать
             value = textState,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color(0XFFE8EFFF),
+                containerColor = Color(0xFFF5F5F9),
                 focusedIndicatorColor = Color.Black,
                 focusedTextColor = Color(0XFF578FFF),
                 disabledIndicatorColor = Color.Transparent,
@@ -286,8 +295,16 @@ fun Authorization(navHost: NavHostController) // navHost: NavHostController
                 cursorColor = Color(0XFF578FFF)),
             onValueChange = {
                 if (it.length <= maxLength) textState = it
+                if (textState.isNotEmpty())
+                {
+                    ColorOfButton = 0xFF1A6FEE
+                }
+                else
+                {
+                    ColorOfButton = 0xFFC9D4FB
+                }
             },
-            shape = RoundedCornerShape(8.dp),
+
             singleLine = true,
             placeholder = {Text("example@mail.ru", color = Color(0xFF939396))},
             trailingIcon = {
@@ -300,11 +317,33 @@ fun Authorization(navHost: NavHostController) // navHost: NavHostController
                     }
                 }
             })
-
-        /*Button(modifier = Modifier
+        Button(modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-            ) { }*/
+            .padding(horizontal = 20.dp, vertical = 30.dp)
+            .height(50.dp),
+            onClick = {}, shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(ColorOfButton))
+        )
+        {Text(text = "Далее", fontSize = 16.sp)}
 
+        Text(
+            text = "Или войдите с помощью",
+            fontSize = 14.sp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 4.dp, top = 245.dp),
+            textAlign = TextAlign.Center,
+            color = Color(0xFF7E7E9A)
+        )
+        Button(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .height(60.dp),
+            onClick = {},
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background, contentColor = Color.Black),
+            border = BorderStroke(2.dp, Color(0xFFEBEBEB))
+
+        ){Text(text = "Войти с Яндекс", fontSize = 16.sp)}
     }
 }
