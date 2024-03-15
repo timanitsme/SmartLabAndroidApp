@@ -243,10 +243,10 @@ fun CustomPassword(
 }
 
 
-@Preview(showBackground= true)
+//@Preview(showBackground= true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Authorization() // navHost: NavHostController
+fun Authorization(navHost: NavHostController) // navHost: NavHostController
 {
     Column (
         Modifier
