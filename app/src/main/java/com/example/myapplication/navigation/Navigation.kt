@@ -7,7 +7,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.screens.Authorization
 import com.example.myapplication.screens.LogIn
+import com.example.myapplication.screens.PatientCard
 import com.example.myapplication.screens.SplashScreen
+import com.example.myapplication.screens.OnBoardingScreen
 /*Класс для перемещения по страницам*/
 @Composable
 fun Navigation() {
@@ -23,5 +25,15 @@ fun Navigation() {
         composable("logInScreen"){
             Authorization(navController)
         }
+        composable("patientCardScreen")
+        {
+            PatientCard(navController)
+        }
+        composable("onboardingscreen")
+        {
+            OnBoardingScreen(navController)
+        }
+
+
     }
 }

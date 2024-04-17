@@ -26,6 +26,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -46,8 +47,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.myapplication.RoundCheckBox
+import com.example.myapplication.navigation.Navigation
 
 
 @Composable
@@ -246,7 +249,7 @@ fun CustomPassword(
 //@Preview(showBackground= true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Authorization(navHost: NavHostController) // navHost: NavHostController
+fun Authorization(navController: NavController) // navHost: NavHostController
 {
     Column (
         Modifier
@@ -268,6 +271,7 @@ fun Authorization(navHost: NavHostController) // navHost: NavHostController
         val maxLength = 30
         val lightBlue = Color(0xffd8e6ff)
         val blue = Color(0xff76a9ff)
+        val emailpattern = Regex("[^@ \\t\\r\\n]+@[^@ \\t\\r\\n]+\\.[^@ \\t\\r\\n]+")
         var ColorOfButton by remember { mutableStateOf(0xFFC9D4FB) }
         Text(
             text = "Введите E-mail",
@@ -295,7 +299,7 @@ fun Authorization(navHost: NavHostController) // navHost: NavHostController
                 cursorColor = Color(0XFF578FFF)),
             onValueChange = {
                 if (it.length <= maxLength) textState = it
-                if (textState.isNotEmpty())
+                if (textState.isNotEmpty() and emailpattern.matches(textState))
                 {
                     ColorOfButton = 0xFF1A6FEE
                 }
@@ -317,11 +321,17 @@ fun Authorization(navHost: NavHostController) // navHost: NavHostController
                     }
                 }
             })
+
         Button(modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp, vertical = 30.dp)
             .height(50.dp),
-            onClick = {}, shape = RoundedCornerShape(8.dp),
+            onClick = {
+                      if (emailpattern.matches(textState))
+                      {
+                          navController.navigate("patientCardScreen")
+                      }
+            }, shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(ColorOfButton))
         )
         {Text(text = "Далее", fontSize = 16.sp)}

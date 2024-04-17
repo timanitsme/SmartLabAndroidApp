@@ -47,7 +47,7 @@ fun SplashScreen(navController: NavHostController) { //navController: NavHostCon
         LaunchedEffect(key1 = true) {
             // Customize the delay time
             delay(1500L)
-            navController.navigate("logInScreen") {
+            navController.navigate("onboardingscreen") {
                 popUpTo("splashScreen")//удаляет страницу и стека, чтобы не было возможности вернуться к этому экрану
                 {
                     inclusive = true
