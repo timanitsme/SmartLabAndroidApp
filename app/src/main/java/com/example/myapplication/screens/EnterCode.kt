@@ -51,40 +51,251 @@ import com.example.myapplication.RoundCheckBox
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.ExperimentalComposeApi
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.R
+import kotlinx.coroutines.delay
 import java.time.Year
 import java.util.*
+import com.example.myapplication.screens.PinCode
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun EnterEmailCode(){ // navHost: NavHostController
-    var pin by remember { mutableStateOf("") }
-    val context = LocalContext.current
-    Column (Modifier
-        .fillMaxWidth()
-        .fillMaxHeight()) {
+fun EnterEmailCode(navHost: NavHostController){ // navHost: NavHostController
+    val textList = listOf(
+        remember{mutableStateOf(
+            TextFieldValue(text="", selection = TextRange(0))
+        )},
+        remember{mutableStateOf(
+            TextFieldValue(text="", selection = TextRange(0))
+        )},
+        remember{mutableStateOf(
+            TextFieldValue(text="", selection = TextRange(0))
+        )},
+        remember{mutableStateOf(
+            TextFieldValue(text="", selection = TextRange(0))
+        )}
+    )
+    val requesterList = listOf(FocusRequester(), FocusRequester(), FocusRequester(), FocusRequester())
+    //
+    val navController = rememberNavController()
 
+    NavHost(navController = navController, startDestination = "start") {
+        composable("start") {
+            ContentView(
+                textList = textList,
+                requesterList = requesterList,
+                navigateToPinCodeScreen = { navController.navigate("pincodescreen") }
+            )
+        }
+        composable("pincodescreen") {
+            PinCode(navHost = navController)
+        }
+        //
+    }
+
+    val context = LocalContext.current
+    //ContentView(textList = textList, requesterList = requesterList)
+
+
+
+    }
+
+fun connectInputedCode(textList: List<MutableState<TextFieldValue>>,
+                       onVerifyCode: ((success: Boolean) -> Unit)? = null
+){
+    var code = ""
+    for (text in textList){
+        code += text.value.text
+    }
+    if (code.length == 4){
+        verifyCode(code, onSuccess = {
+            onVerifyCode?.let{it(true)}
+        }, onError = {
+            onVerifyCode?.let{it(false)}
+        })
+    }
+}
+
+fun verifyCode(code: String, onSuccess: () -> Unit, onError: () -> Unit){
+    if(code == "0123"){
+        onSuccess()
+    }
+    else{
+        onError()
+    }
+}
+
+fun nextFocus(textList: List<MutableState<TextFieldValue>>, requesterList: List<FocusRequester>)
+{
+    for (index in textList.indices) {
+        if (textList[index].value.text == ""){
+            if (index < textList.size){
+                requesterList[index].requestFocus()
+                break
+            }
+        }
+    }
+}
+
+
+@Composable
+fun InputView(
+    value: TextFieldValue,
+    onValueChange: (value: TextFieldValue) -> Unit,
+    focusRequester: FocusRequester
+){
+    BasicTextField(value = value, onValueChange = onValueChange, modifier = Modifier
+        .focusRequester(focusRequester)
+        .padding(horizontal = 10.dp)
+        .clip(RoundedCornerShape(8.dp))
+        .background(Color(0xFFF5F5F9))
+        .border(1.dp, Color(0xFFEBEBEB), RoundedCornerShape(8.dp))
+        .wrapContentSize(),
+        maxLines = 1, decorationBox = {
+                innerTextField ->
+            Box(modifier = Modifier
+                .width(50.dp)
+                .height(50.dp),
+                contentAlignment = Alignment.Center
+            ){
+                innerTextField()
+            }
+        }, cursorBrush = SolidColor(Color.Black),
+        textStyle = TextStyle(color = Color.Black, fontSize = 20.sp, textAlign = TextAlign.Center
+        ), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = null))
+}
+
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun ContentView(textList: List<MutableState<TextFieldValue>>, requesterList: List<FocusRequester>, navigateToPinCodeScreen: () -> Unit){//Callback для навигации
+    val focusManager = LocalFocusManager.current
+    val keyboarController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
+
+    Surface(modifier = Modifier
+        .fillMaxSize()){
+        Column (
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()) {
+            Button(onClick = {}, modifier = Modifier
+                .padding(start = 26.dp, top = 74.dp)
+                .size(32.dp),
+                shape = RoundedCornerShape(8.dp), contentPadding = PaddingValues(0.dp),
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color.Black,
+                    containerColor = Color(0xFFF5F5F9)
+                ))
+            {
+                Image(
+                    painter = painterResource(id = R.drawable.iconback),
+                    contentDescription = "back to email",
+                    modifier = Modifier
+                        .size(20.dp)
+                )
+            }
             Text(
                 "Введите код из E-mail",
                 fontSize = 18.sp,
                 modifier = Modifier
                     .padding(
-                    top = 230.dp,
-                    bottom = 24.dp)
+                        top = 132.dp,
+                        bottom = 24.dp
+                    )
                     .align(Alignment.CenterHorizontally),
-                    fontWeight = FontWeight.Bold)
+                fontWeight = FontWeight.Bold)
+
+
+
+
+
         }
-        //ComposePinInput()
+        Box(modifier = Modifier.fillMaxSize()){
+            Row(modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .padding(top = 280.dp)
+                .align(Alignment.TopCenter)){
+                for (i in textList.indices){
+                    InputView(value=textList[i].value, onValueChange={
+                        newValue ->
+                        if (textList[i].value.text != ""){
+                            if (newValue.text == ""){
+                                textList[i].value = TextFieldValue(
+                                    text = "",
+                                    selection = TextRange(0)
+                                )
+                            }
+                            return@InputView
+                        }
 
+                        textList[i].value = TextFieldValue(
+                            text = newValue.text,
+                            selection = TextRange(newValue.text.length)
+                        )
+                        connectInputedCode(textList){
+                            focusManager.clearFocus()
+                            keyboarController?.hide()
+                            if(it){
+                                Toast.makeText(context, "Успешно", Toast.LENGTH_SHORT).show()
+                                //navHost.navigate("pincodescreen")
+                                navigateToPinCodeScreen()// Сообщаем о необходимости навигации
+                            }
+                            else{
+                                Toast.makeText(context, "Неправильный код", Toast.LENGTH_SHORT).show()
+                                for (text in textList)
+                                {
+                                    text.value = TextFieldValue(
+                                        text = "",
+                                        selection = TextRange(0)
+                                    )
+                                }
+                            }
+                        }
+                        nextFocus(textList, requesterList)
+                    },
+                        focusRequester = requesterList[i])
+                }
+            }
 
+        }
     }
+    LaunchedEffect(key1 = null, block = {
+        delay(300)
+        requesterList[0].requestFocus()
+    })
+}

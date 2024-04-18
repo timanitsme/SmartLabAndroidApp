@@ -329,7 +329,7 @@ fun Authorization(navController: NavController) // navHost: NavHostController
             onClick = {
                       if (emailpattern.matches(textState))
                       {
-                          navController.navigate("patientCardScreen")
+                          navController.navigate("entercodescreen")
                       }
             }, shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(ColorOfButton))

@@ -132,7 +132,7 @@ fun OnBoardingScreen(navHost: NavHostController){ // navHost: NavHostController
                             content = "Наши врачи всегда наблюдают\nза вашими показателями здоровья"
                             resource = R.drawable.onboardingpicthird
                             functionVariable = {navHost.navigate("loginscreen"){
-                                popUpTo("onboardingscreen")//удаляет страницу и стека, чтобы не было возможности вернуться к этому экрану
+                                popUpTo("onboardingscreen")
                                 {
                                     inclusive = true
                                 }
@@ -141,10 +141,9 @@ fun OnBoardingScreen(navHost: NavHostController){ // navHost: NavHostController
                     }
 
 
-                    TextButton(onClick = functionVariable) {
+                    TextButton(onClick = functionVariable, modifier = Modifier.padding(start = 30.dp, top =  49.dp)) {
                         Text(scipper,
                             fontSize = 20.sp,
-                            modifier = Modifier.padding(start = 30.dp, top =  49.dp),
                             textAlign = TextAlign.Left, fontWeight = FontWeight.SemiBold, color = Color(0xFF57A9FF)
                         )
                     }

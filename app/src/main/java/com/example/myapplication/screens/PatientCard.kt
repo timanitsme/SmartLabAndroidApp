@@ -52,11 +52,17 @@ import com.example.myapplication.RoundCheckBox
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -66,16 +72,28 @@ import java.time.Year
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
-/*@Preview(showBackground = true)*/
+//@Preview(showBackground = true)
 @Composable
-fun PatientCard(navHost: NavHostController){
+fun PatientCard(navHost: NavHostController){ //navHost: NavHostController
     var textName by remember { mutableStateOf("") }
     var textPatronymic by remember { mutableStateOf("") }
     var textSurname by remember { mutableStateOf("") }
-    var birthdate by remember { mutableStateOf("") }
-    var is_filled = arrayOf(0, 0, 0, 0, 0)
     var ColorOfButton by remember{ mutableStateOf(0xFFC9D4FB) }
-    val mycontext = LocalContext.current
+    val context = LocalContext.current
+    val genders = arrayOf("Мужской", "Женский")
+    var expanded by remember { mutableStateOf(false) }
+    var selectedText by remember { mutableStateOf(genders[0]) }
+    // Выбор даты
+    val day: Int
+    val month: Int
+    val year: Int
+    val calendar = Calendar.getInstance()
+    year = calendar.get((Calendar.YEAR))
+    month = calendar.get((Calendar.MONTH))
+    day = calendar.get((Calendar.DAY_OF_MONTH))
+    var date by remember { mutableStateOf("") }
+    val datePickerDialog = DatePickerDialog(context, {_: DatePicker, year: Int, month: Int,
+                                                      day: Int -> date = " $day/$month/$year"}, year, month, day)
     Column(modifier= Modifier.fillMaxSize()) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -83,13 +101,16 @@ fun PatientCard(navHost: NavHostController){
                 modifier = Modifier.padding(top = 76.dp, start = 20.dp), textAlign = TextAlign.Left,
                 fontWeight = FontWeight.Bold
             )
-            Text(
-                text = "Пропустить",
-                fontSize = 15.sp,
-                modifier = Modifier.padding(top = 84.dp, start = 20.dp, end = 20.dp),
-                textAlign = TextAlign.End,
-                color = Color(0XFF1A6FEE)
-            )
+            TextButton(onClick = {navHost.navigate("patientCardScreen")},
+                modifier = Modifier.padding(top = 84.dp, start = 35.dp,)) {
+                Text(
+                    text = "Пропустить",
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.End,
+                    color = Color(0XFF1A6FEE)
+                )
+            }
+
 
         }
         Text(
@@ -113,19 +134,9 @@ fun PatientCard(navHost: NavHostController){
                 focusedTextColor = Color(0XFF578FFF),
                 disabledIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = Color(0XFF578FFF)
-            ),
+                cursorColor = Color(0XFF578FFF)),
             onValueChange = {
-                if (it.length <= 30) textName = it
-                if (textName.isNotEmpty())
-                    is_filled[0] = 1
-                else
-                    is_filled[0] = 0;
-                if (is_filled.sum() == 5)
-                    ColorOfButton = 0xFF1A6FEE
-                else
-                    ColorOfButton = 0xFFC9D4FB
-            },
+                if (it.length <= 30) textName = it},
             singleLine = true,
             placeholder = { Text("Имя", color = Color(0xFF939396)) })
         TextField(modifier = Modifier
@@ -137,22 +148,12 @@ fun PatientCard(navHost: NavHostController){
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color(0xFFF5F5F9),
                 focusedIndicatorColor = Color.Black,
-                focusedTextColor = Color.Black,
+                focusedTextColor = Color(0XFF578FFF),
                 disabledIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = Color(0XFF578FFF)
-            ),
+                cursorColor = Color(0XFF578FFF)),
             onValueChange = {
-                if (it.length <= 30) textPatronymic = it
-                if (textPatronymic.isNotEmpty())
-                    is_filled[1] = 1
-                else
-                    is_filled[1] = 0;
-                if (is_filled.sum() == 5)
-                    ColorOfButton = 0xFF1A6FEE
-                else
-                    ColorOfButton = 0xFFC9D4FB
-            },
+                if (it.length <= 30) textPatronymic = it},
             singleLine = true,
             placeholder = { Text("Отчество", color = Color(0xFF939396)) })
         TextField(modifier = Modifier
@@ -164,84 +165,15 @@ fun PatientCard(navHost: NavHostController){
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color(0xFFF5F5F9),
                 focusedIndicatorColor = Color.Black,
-                focusedTextColor = Color.Black,
+                focusedTextColor = Color(0XFF578FFF),
                 disabledIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = Color(0XFF578FFF)
-            ),
+                cursorColor = Color(0XFF578FFF)),
             onValueChange = {
-                if (it.length <= 30) textSurname = it
-                if (textSurname.isNotEmpty())
-                    is_filled[2] = 1
-                else
-                    is_filled[2] = 0;
-                if (is_filled.sum() == 5)
-                    ColorOfButton = 0xFF1A6FEE
-                else
-                    ColorOfButton = 0xFFC9D4FB
-            },
+                if (it.length <= 30) textSurname = it },
             singleLine = true,
             placeholder = { Text("Фамилия", color = Color(0xFF939396)) })
 
-
-        val byear: Int
-        val bmonth: Int
-        val bday: Int
-        val calendar = Calendar.getInstance()
-        byear = calendar.get((Calendar.YEAR))
-        bmonth = calendar.get((Calendar.MONTH))
-        bday = calendar.get((Calendar.DAY_OF_MONTH))
-        calendar.time = Date()
-        val BirthdayPickerDialog = DatePickerDialog(
-            mycontext,
-            { _: DatePicker, bYear: Int, bMonth: Int, bDay: Int ->
-                birthdate = "$bDay/${bmonth + 1}/$byear"
-            }, byear, bmonth, bday
-
-        )
-
-        Row {
-            // Разобраться с datepickerом
-                /*
-                enabled = false,
-                colors = TextFieldDefaults.textFieldColors(
-                    disabledTextColor = LocalContentColor.current.copy(LocalContentAlpha.current),
-                    disabledLabelColor =  MaterialTheme.colors.onSurface.copy(ContentAlpha.medium)
-                )
-
-            )*/
-
-
-
-        /*TextField(modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 24.dp)
-            .clip(shape = RoundedCornerShape(8.dp)),
-            value = birthdate,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color(0xFFF5F5F9),
-                focusedIndicatorColor = Color.Black,
-                focusedTextColor = Color.Black,
-                disabledIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = Color(0XFF578FFF)
-            ),
-            onValueChange = {
-                if (it.length <= 30) birthdate = it
-                if (birthdate.isNotEmpty())
-                    is_filled[2] = 1
-                else
-                    is_filled[2] = 0;
-                if (is_filled.sum() == 5)
-                    ColorOfButton = 0xFF1A6FEE
-                else
-                    ColorOfButton = 0xFFC9D4FB
-            },
-            singleLine = true,
-            placeholder = { Text("Дата рождения", color = Color(0xFF939396)) })*/
-        }
-            // Идея: реализовать список используя trailing icon
             /*if ()
             {
                 ColorOfButton = 0xFF1A6FEE
@@ -250,16 +182,96 @@ fun PatientCard(navHost: NavHostController){
             {
                 ColorOfButton = 0xFFC9D4FB
             }*/
-            Button(modifier = Modifier
+
+
+        TextField(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp, top = 24.dp)
+            .clip(shape = RoundedCornerShape(8.dp)),
+            value = date,
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color(0xFFF5F5F9),
+                focusedIndicatorColor = Color.Black,
+                focusedTextColor = Color(0XFF578FFF),
+                disabledIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                cursorColor = Color(0XFF578FFF)),
+            onValueChange = {},
+            readOnly = true,
+            singleLine = true,
+            placeholder = {Text("Дата рождения", color = Color(0xFF939396))},
+            trailingIcon = {
+                IconButton(onClick = { datePickerDialog.show() }) {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = null
+                    )
+                }
+            })
+        // Список
+        Box(
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 30.dp)
-                .height(56.dp)
-                .width(335.dp),
-                onClick = {}, shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(ColorOfButton))
-            ) {Text(text = "Создать", fontSize = 16.sp)}
+        ) {
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                modifier = Modifier.fillMaxWidth(),
+                onExpandedChange = {
+                    expanded = !expanded
+                }
+            ) {
+                TextField(
+                    value = selectedText,
+                    onValueChange = {},
+                    readOnly = true,
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color(0xFFF5F5F9),
+                        focusedIndicatorColor = Color.Black,
+                        focusedTextColor = Color(0XFF578FFF),
+                        disabledIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        cursorColor = Color(0XFF578FFF)),
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                        .padding(top = 24.dp, start = 20.dp, end = 20.dp)
+                        .clip(shape = RoundedCornerShape(8.dp))
+                )
 
-
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    modifier = Modifier.fillMaxWidth(),
+                    onDismissRequest = { expanded = false }
+                ) {
+                    genders.forEach { item ->
+                        DropdownMenuItem(
+                            text = { Text(text = item) },
+                            onClick = {
+                                selectedText = item
+                                expanded = false
+                                Toast.makeText(context, item, Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        if (textName.isNotEmpty() and textSurname.isNotEmpty() and textPatronymic.isNotEmpty() and selectedText.isNotEmpty() and date.isNotEmpty())
+            ColorOfButton = 0xFF1A6FEE
+        else
+            ColorOfButton = 0xFFC9D4FB
+        Button(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 30.dp)
+            .height(56.dp)
+            .width(335.dp),
+            onClick = {
+                if(textName.isNotEmpty() and textSurname.isNotEmpty() and textPatronymic.isNotEmpty() and selectedText.isNotEmpty() and date.isNotEmpty())
+                    navHost.navigate("pincodescreen")
+            }, shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(ColorOfButton))
+        ) {Text(text = "Создать", fontSize = 16.sp)}
     }
 }
 

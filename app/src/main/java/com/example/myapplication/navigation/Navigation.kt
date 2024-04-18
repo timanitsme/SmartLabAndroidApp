@@ -6,10 +6,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.screens.Authorization
+import com.example.myapplication.screens.ContentView
 import com.example.myapplication.screens.LogIn
 import com.example.myapplication.screens.PatientCard
 import com.example.myapplication.screens.SplashScreen
 import com.example.myapplication.screens.OnBoardingScreen
+import com.example.myapplication.screens.PinCode
+import com.example.myapplication.screens.EnterEmailCode
 /*Класс для перемещения по страницам*/
 @Composable
 fun Navigation() {
@@ -33,7 +36,14 @@ fun Navigation() {
         {
             OnBoardingScreen(navController)
         }
-
+        composable("pincodescreen")
+        {
+            PinCode(navController)
+        }
+        composable("entercodescreen")
+        {
+            EnterEmailCode(navController)
+        }
 
     }
 }
