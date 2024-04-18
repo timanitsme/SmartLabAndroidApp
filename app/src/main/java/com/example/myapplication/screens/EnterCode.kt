@@ -90,49 +90,6 @@ import java.time.Year
 import java.util.*
 import com.example.myapplication.screens.PinCode
 
-@OptIn(ExperimentalMaterial3Api::class)
-//@Preview(showBackground = true)
-@Composable
-fun EnterEmailCode(navHost: NavHostController){ // navHost: NavHostController
-    val textList = listOf(
-        remember{mutableStateOf(
-            TextFieldValue(text="", selection = TextRange(0))
-        )},
-        remember{mutableStateOf(
-            TextFieldValue(text="", selection = TextRange(0))
-        )},
-        remember{mutableStateOf(
-            TextFieldValue(text="", selection = TextRange(0))
-        )},
-        remember{mutableStateOf(
-            TextFieldValue(text="", selection = TextRange(0))
-        )}
-    )
-    val requesterList = listOf(FocusRequester(), FocusRequester(), FocusRequester(), FocusRequester())
-    //
-    val navController = rememberNavController()
-
-    NavHost(navController = navController, startDestination = "start") {
-        composable("start") {
-            ContentView(
-                textList = textList,
-                requesterList = requesterList,
-                navigateToPinCodeScreen = { navController.navigate("pincodescreen") }
-            )
-        }
-        composable("pincodescreen") {
-            PinCode(navHost = navController)
-        }
-        //
-    }
-
-    val context = LocalContext.current
-    //ContentView(textList = textList, requesterList = requesterList)
-
-
-
-    }
-
 fun connectInputedCode(textList: List<MutableState<TextFieldValue>>,
                        onVerifyCode: ((success: Boolean) -> Unit)? = null
 ){
