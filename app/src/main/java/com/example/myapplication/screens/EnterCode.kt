@@ -159,7 +159,7 @@ fun InputView(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ContentView(textList: List<MutableState<TextFieldValue>>, requesterList: List<FocusRequester>, navigateToPinCodeScreen: () -> Unit){//Callback для навигации
+fun ContentView(textList: List<MutableState<TextFieldValue>>, requesterList: List<FocusRequester>, navigateToPinCodeScreen: () -> Unit, navigateToLogInScreen: () -> Unit){//Callback для навигации
     val focusManager = LocalFocusManager.current
     val keyboarController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
@@ -170,7 +170,7 @@ fun ContentView(textList: List<MutableState<TextFieldValue>>, requesterList: Lis
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()) {
-            Button(onClick = {}, modifier = Modifier
+            Button(onClick = {navigateToLogInScreen()}, modifier = Modifier
                 .padding(start = 26.dp, top = 74.dp)
                 .size(32.dp),
                 shape = RoundedCornerShape(8.dp), contentPadding = PaddingValues(0.dp),
@@ -229,8 +229,7 @@ fun ContentView(textList: List<MutableState<TextFieldValue>>, requesterList: Lis
                             keyboarController?.hide()
                             if(it){
                                 Toast.makeText(context, "Успешно", Toast.LENGTH_SHORT).show()
-                                //navHost.navigate("pincodescreen")
-                                navigateToPinCodeScreen()// Сообщаем о необходимости навигации
+                                navigateToPinCodeScreen()
                             }
                             else{
                                 Toast.makeText(context, "Неправильный код", Toast.LENGTH_SHORT).show()
