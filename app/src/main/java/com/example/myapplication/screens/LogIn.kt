@@ -1,5 +1,6 @@
 package com.example.myapplication.screens
 
+import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -56,7 +57,7 @@ import com.example.myapplication.viewmodel.ViewModelMain
 //@Preview(showBackground= true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Authorization(navController: NavController, viewModel: ViewModelMain) // navHost: NavHostController
+fun Authorization(navController: NavController, viewModel: ViewModelMain, onContinueClicked: (String) -> Unit) // navHost: NavHostController
 {
     Column (
         Modifier
@@ -135,6 +136,7 @@ fun Authorization(navController: NavController, viewModel: ViewModelMain) // nav
                       if (emailpattern.matches(email))
                       {
                           viewModel.sendCodeToEmail(email)
+                          onContinueClicked(email)
                           navController.navigate("entercodescreen")
                       }
             }, shape = RoundedCornerShape(8.dp),
@@ -162,4 +164,5 @@ fun Authorization(navController: NavController, viewModel: ViewModelMain) // nav
 
         ){Text(text = "Войти с Яндекс", fontSize = 16.sp)}
     }
+
 }

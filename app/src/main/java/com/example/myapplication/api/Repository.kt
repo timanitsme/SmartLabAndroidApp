@@ -24,4 +24,5 @@ interface Repository {
     //Метод для получения данных из API. "Завернутых" в пользоватлеьский класс обработки данных
     suspend fun getCharacter():Flow<Result<RickAndMorty>>
     suspend fun sendCodeEmail(email:String):Flow<Result<String>>
+    suspend fun signIn(email: String, code:String):Flow<Result<String>>
 }

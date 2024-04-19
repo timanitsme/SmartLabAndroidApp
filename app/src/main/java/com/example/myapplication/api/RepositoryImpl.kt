@@ -60,5 +60,26 @@ class RepositoryImpl(
             emit(Result.Success(request))
         }
     }
-
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
+    override suspend fun signIn(email: String, code: String): Flow<Result<String>> {
+        return flow{
+            val request = try{
+                api.signIn(email, code)
+            }
+            catch (e: IOException) {
+                e.printStackTrace()
+                emit( Result.Error(message = "Don't send code"))
+                return@flow
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                emit(Result.Error(message = "Don't send code"))
+                return@flow
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emit(Result.Error(message = "Don't send code"))
+                return@flow
+            }
+            emit(Result.Success(request))
+        }
+    }
 }

@@ -176,7 +176,6 @@ fun PinCode(navHost: NavHostController){ // navHost: NavHostController
 
     }
 
-    //ComposePinInput()
 
 
 }
@@ -219,7 +218,6 @@ fun NumbersPanel(firstnum: String, secnum: String, thirdnum: String, pin: String
         ) {
             Text(thirdnum, fontSize = 24.sp)
         }
-        //Image(painter = painterResource(id = R.drawable.deleteicon))
 
     }
 }

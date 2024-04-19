@@ -81,16 +81,21 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.MainActivity
 import com.example.myapplication.R
 import kotlinx.coroutines.delay
 import java.time.Year
 import java.util.*
 import com.example.myapplication.screens.PinCode
-
-fun connectInputedCode(textList: List<MutableState<TextFieldValue>>,
+import com.example.myapplication.viewmodel.ViewModelMain
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.last
+fun connectInputedCode(textList: List<MutableState<TextFieldValue>>, email: String, viewModel: ViewModelMain, wrongCode: Boolean,
                        onVerifyCode: ((success: Boolean) -> Unit)? = null
 ){
     var code = ""
@@ -98,21 +103,24 @@ fun connectInputedCode(textList: List<MutableState<TextFieldValue>>,
         code += text.value.text
     }
     if (code.length == 4){
-        verifyCode(code, onSuccess = {
+        viewModel.signInWithCode(email, code)
+        verifyCode(code, viewModel, wrongCode, onSuccess = {
             onVerifyCode?.let{it(true)}
         }, onError = {
             onVerifyCode?.let{it(false)}
         })
+
     }
 }
 
-fun verifyCode(code: String, onSuccess: () -> Unit, onError: () -> Unit){
-    if(code == "0123"){
-        onSuccess()
-    }
-    else{
+fun verifyCode(code: String, viewModel: ViewModelMain, wrongCode: Boolean, onSuccess: () -> Unit, onError: () -> Unit){
+    if(!wrongCode){
         onError()
     }
+    else{
+        onSuccess()
+    }
+
 }
 
 fun nextFocus(textList: List<MutableState<TextFieldValue>>, requesterList: List<FocusRequester>)
@@ -126,7 +134,6 @@ fun nextFocus(textList: List<MutableState<TextFieldValue>>, requesterList: List<
         }
     }
 }
-
 
 @Composable
 fun InputView(
@@ -159,10 +166,15 @@ fun InputView(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ContentView(textList: List<MutableState<TextFieldValue>>, requesterList: List<FocusRequester>, navigateToPinCodeScreen: () -> Unit, navigateToLogInScreen: () -> Unit){//Callback для навигации
+fun ContentView(textList: List<MutableState<TextFieldValue>>, requesterList: List<FocusRequester>, navigateToPinCodeScreen: () -> Unit, navigateToLogInScreen: () -> Unit, email: String, viewModel: ViewModelMain){
     val focusManager = LocalFocusManager.current
     val keyboarController = LocalSoftwareKeyboardController.current
+    var wrongCode by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    LaunchedEffect(key1 = viewModel.showErrorToastChannel) {
+        viewModel.showErrorToastChannel.collectLatest { show -> wrongCode = show
+        }
+    }
 
     Surface(modifier = Modifier
         .fillMaxSize()){
@@ -224,7 +236,7 @@ fun ContentView(textList: List<MutableState<TextFieldValue>>, requesterList: Lis
                             text = newValue.text,
                             selection = TextRange(newValue.text.length)
                         )
-                        connectInputedCode(textList){
+                        connectInputedCode(textList, email, viewModel, wrongCode){
                             focusManager.clearFocus()
                             keyboarController?.hide()
                             if(it){
